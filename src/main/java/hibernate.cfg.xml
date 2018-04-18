@@ -5,22 +5,24 @@
 
 <hibernate-configuration>
 	<session-factory>
-	<property name="hibernate.connection.driver_class">net.sourceforge.jtds.jdbc.Driver</property>
-	<property name="hibernate.connection.url">jdbc:jtds:sqlserver://mvformacion:1433/HIBERNATE</property>
-	<property name="hibernate.connection.username">sa</property>
-	<property name="hibernate.connection.password">Temporal22</property>
-	<property name="hibernate.connection.pool_size">2</property>
-	
-	<property name="hibernate.current_session_context_class">thread</property>
-	<property name="hibernate.show_sql">true</property>
-	<property name="hibernate.dialect">org.hibernate.dialect.SQLServerDialect</property>
-	<property name="hibernate.hbm2ddl.auto">create</property>
-<!-- 	<property name="hibernate.cache.use_query_cache">thread</property> -->
-<!-- 	<property name="hibernate.cache.region.factory_class">thread</property> -->
-<!-- 	<property name="hibernate.javax.cache.provider">thread</property> -->
-<!-- 	<property name="hibernate.hbm2ddl.import_files">acciones.sql</property> -->
+		<property name="hibernate.connection.driver_class">net.sourceforge.jtds.jdbc.Driver</property>
+		<property name="hibernate.connection.url">jdbc:jtds:sqlserver://mvformacion:1433/HIBERNATE</property>
+		<property name="hibernate.connection.username">sa</property>
+		<property name="hibernate.connection.password">Temporal22</property>
+		<property name="hibernate.connection.pool_size">2</property>
 
-	<mapping class="modelo.Persona"/>
-	
+		<property name="hibernate.current_session_context_class">thread</property>
+		<property name="hibernate.show_sql">true</property>
+		<property name="hibernate.dialect">org.hibernate.dialect.SQLServerDialect</property>
+		<property name="hibernate.hbm2ddl.auto">create</property>
+		<!-- <property name="hibernate.cache.use_query_cache">thread</property> -->
+		<!-- <property name="hibernate.cache.region.factory_class">thread</property> -->
+		<!-- <property name="hibernate.javax.cache.provider">thread</property> -->
+		<!-- <property name="hibernate.hbm2ddl.import_files">acciones.sql</property> -->
+
+		<mapping class="modelo.Persona" />
+		<mapping class="modelo.Vehiculo" />
+
+
 	</session-factory>
 </hibernate-configuration>
