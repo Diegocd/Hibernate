@@ -5,8 +5,10 @@ import java.util.Date;
 import java.util.List;
 
 import modelo.Cliente;
+import modelo.Direccion;
 import modelo.EstadoCivil;
 import modelo.Persona;
+import modelo.Telefono;
 import modelo.TipoVehiculo;
 import modelo.Vehiculo;
 import repositorioPersona.RepositorioCliente;
@@ -17,20 +19,21 @@ public class Pruebas {
 
 	public static void main(String[] args) {
 		crearPersona("11111111S", "log1");
-		crearCliente("11111111D", "log2");
-		crearPersona("11111111R", "log3");
-		crearCliente("11111111E", "log4");
+//		crearCliente("11111111D", "log2");
+//		crearPersona("11111111R", "log3");
+//		crearCliente("11111111E", "log4");
 //		 modificarPersona();
 		 modificarPersonaAlCompleto();
-		 modificarClienteAlCompleto();
-		 eliminarPersona(3);
-		 eliminarCliente(4);
-//		 modificarColorDeVehiculo();
-//		 modificarVehiculoAlCompleto();
-//		 eliminarVehiculo(2);
-//		consultarPersona(1);
-		consultarPersona("%Miguel%", "", "", null, "Miguel1");
-		consultarCliente("%Miguel%", "", "", null, "Miguel2");
+//		 modificarClienteAlCompleto();
+//		 eliminarPersona(1);
+//		 eliminarPersona(4);
+//		 eliminarCliente(4);
+////		 modificarColorDeVehiculo();
+////		 modificarVehiculoAlCompleto();
+////		 eliminarVehiculo(2);
+////		consultarPersona(1);
+//		consultarPersona("%Miguel%", "", "", null, "Miguel1");
+//		consultarCliente("%Miguel%", "", "", null, "Miguel2");
 	}
 
 	private static Integer crearPersona(String dni, String login) {
@@ -54,6 +57,27 @@ public class Pruebas {
 		persona.setAlta(new Date());
 		persona.setLogin(login);
 		persona.setPass("login");
+		
+		Direccion direccion = new Direccion();
+		direccion.setProvincia("Sevilla");
+		direccion.setCiudad("Ecija");
+		direccion.setCodigoPostal("41400");
+		
+		Direccion direccion2 = new Direccion();
+		direccion2.setProvincia("Sevilla");
+		direccion2.setCiudad("Ecija");
+		direccion2.setCodigoPostal("41400");
+		
+		Telefono telefono = new Telefono();
+		telefono.setNumero("666666666");
+		Telefono telefono2 = new Telefono();
+		telefono2.setNumero("666777777");
+		
+		persona.addAddress(direccion);
+		persona.addAddress(direccion2);
+		persona.addPhone(telefono);
+		persona.addPhone(telefono2);
+		
 		return RepositorioPersona.crearPersona(persona);
 		
 	}
@@ -69,16 +93,25 @@ private static Integer crearCliente(String dni, String login) {
 		persona.setAlta(new Date());
 		persona.setLogin(login);
 		persona.setPass("login");
+		
 		return RepositorioCliente.crearCliente(persona);
 		
 	}
 
-	private static void modificarPersona() {
-		RepositorioPersona.modificarPersona(1, "Jesús");
-	}
-
 	private static void modificarPersonaAlCompleto() {
-		Persona persona = new Persona();
+		Persona persona = RepositorioPersona.consultarPersona(1);
+		
+		Direccion direccion = new Direccion();
+		direccion.setProvincia("Sevilla");
+		direccion.setCiudad("Ecija");
+		direccion.setCodigoPostal("41400");
+		persona.addAddress(direccion);
+		persona.removeAddress(persona.getDirecciones().get(0));
+		persona.getDirecciones().get(0).setCiudad("Osuna");
+		
+		RepositorioPersona.agregarTelefono("656666666", 1);
+		RepositorioPersona.eliminarTelefono(4, 1);
+		
 		persona.setApellidos("Díaz");
 		persona.setDni("12312312D");
 		persona.setEdad(29);
@@ -145,7 +178,7 @@ private static Integer crearCliente(String dni, String login) {
 	}
 
 	private static void consultarPersona(final Integer idPersona) {
-		final Persona persona = RepositorioPersona.consultarNombreCompleto(idPersona);
+		final Persona persona = RepositorioPersona.consultarPersona(idPersona);
 		System.out.println(persona.getNombre());
 		System.out.println(persona.getApellidos());
 		System.out.println(persona.getEstadoCivil());

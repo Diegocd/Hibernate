@@ -6,8 +6,11 @@ import java.util.List;
 import org.hibernate.Session;
 
 import modelo.Cliente;
+import modelo.Direccion;
 import modelo.EstadoCivil;
 import modelo.Persona;
+import modelo.Telefono;
+import modelo.Usuario;
 import util.HibernateUtil;
 
 public class RepositorioPersona {
@@ -29,19 +32,41 @@ public class RepositorioPersona {
 
 	}
 
-	public static void modificarPersona(final Integer idPersona, final String nombre) {
+	public static void agregarTelefono(final String telefono, Integer idPersona) {
 		final Session sesion = HibernateUtil.getSessionFactory().getCurrentSession();
 		try {
 			sesion.beginTransaction();
-			sesion.createQuery("Update Persona set PER_NOM = :nombre where PER_ID = :identificador")
-					.setParameter("nombre", nombre).setParameter("identificador", idPersona).executeUpdate();
-			// final Persona personaBBDD = (Persona) sesion.createQuery("from Persona where
-			// PER_ID = :idPersona")
-			// .setParameter("idPersona", idPersona).uniqueResult();
-			// personaBBDD.setNombre(nombre);
+			
+			Persona persona = (Persona) sesion.createQuery("from Persona p where p.idUsuario = :idPersona")
+					.setParameter("idPersona", idPersona).uniqueResult();
+
+			Telefono tlf = new Telefono();
+			tlf.setNumero(telefono);
+			persona.addPhone(tlf);
+
 			sesion.getTransaction().commit();
 		} catch (Exception e) {
-			System.out.println("Ha ocurrido un error modificando a la persona: " + e.getMessage());
+			System.out.println("Ha ocurrido un error agregando el telefono: " + e.getMessage());
+			sesion.getTransaction().rollback();
+			throw new RuntimeException();
+		} finally {
+			sesion.close();
+		}
+
+	}
+
+	public static void eliminarTelefono(final Integer idTelefono, final Integer idPersona) {
+		final Session sesion = HibernateUtil.getSessionFactory().getCurrentSession();
+		try {
+			sesion.beginTransaction();
+			Persona persona = (Persona) sesion.createQuery("from Persona p where p.idUsuario = :idPersona")
+					.setParameter("idPersona", idPersona).uniqueResult();
+
+			persona.getTelefonos().removeIf(tel -> tel.getIdTelefono() == idTelefono);
+			
+			sesion.getTransaction().commit();
+		} catch (Exception e) {
+			System.out.println("Ha ocurrido un error eliminando el telefono: " + e.getMessage());
 			sesion.getTransaction().rollback();
 			throw new RuntimeException();
 		} finally {
@@ -70,10 +95,11 @@ public class RepositorioPersona {
 		final Session sesion = HibernateUtil.getSessionFactory().getCurrentSession();
 		try {
 			sesion.beginTransaction();
-			sesion.createQuery("Delete Usuario where USU_ID = :identificador").setParameter("identificador", idPersona)
-					.executeUpdate();
-			// sesion.delete((Persona) sesion.createQuery("From Persona where PER_ID =
-			// :identificador").setParameter("identificador", idPersona).uniqueResult());
+			// sesion.createQuery("Delete Usuario where USU_ID =
+			// :identificador").setParameter("identificador", idPersona)
+			// .executeUpdate();
+			sesion.delete((Usuario) sesion.createQuery("From Usuario u where u.idUsuario = :identificador")
+					.setParameter("identificador", idPersona).uniqueResult());
 			sesion.getTransaction().commit();
 		} catch (Exception e) {
 			System.out.println("Ha ocurrido un error eliminando a la persona: " + e.getMessage());
@@ -85,11 +111,11 @@ public class RepositorioPersona {
 
 	}
 
-	public static Persona consultarNombreCompleto(Integer idPersona) {
+	public static Persona consultarPersona(Integer idPersona) {
 		final Session sesion = HibernateUtil.getSessionFactory().getCurrentSession();
 		try {
 			sesion.beginTransaction();
-			return (Persona) sesion.createQuery("from Persona where per_id = :idPersona")
+			return (Persona) sesion.createQuery("from Persona p where p.idUsuario = :idPersona")
 					.setParameter("idPersona", idPersona).uniqueResult();
 		} catch (Exception e) {
 			System.out.println("Se ha prducido un error con la consulta: " + e.getMessage());
@@ -100,13 +126,14 @@ public class RepositorioPersona {
 		}
 	}
 
-	public static List<Persona> consultar(String nombre, String apellidos, String dni, EstadoCivil estadoCivil, String login) {
+	public static List<Persona> consultar(String nombre, String apellidos, String dni, EstadoCivil estadoCivil,
+			String login) {
 		final Session sesion = HibernateUtil.getSessionFactory().getCurrentSession();
 		try {
 			sesion.beginTransaction();
-			
+
 			final StringBuilder sb = new StringBuilder("from Persona Where 1=1");
-			
+
 			if (!nombre.isEmpty()) {
 				sb.append(" and PER_NOM in (select nombre from Persona where PER_NOM like :nombre)");
 			}
@@ -116,15 +143,15 @@ public class RepositorioPersona {
 			if (!dni.isEmpty()) {
 				sb.append(" and PER_DNI = :dni");
 			}
-			if (estadoCivil!=null) {
+			if (estadoCivil != null) {
 				sb.append(" and PER_ECV = :estadoCivil");
 			}
 			if (!login.isEmpty()) {
 				sb.append(" and USU_LOG = :login");
 			}
-			
+
 			final org.hibernate.query.Query<Persona> consulta = sesion.createQuery(sb.toString());
-			
+
 			if (!nombre.isEmpty()) {
 				consulta.setParameter("nombre", nombre);
 			}
@@ -134,7 +161,7 @@ public class RepositorioPersona {
 			if (!dni.isEmpty()) {
 				consulta.setParameter("dni", dni);
 			}
-			if (estadoCivil!=null) {
+			if (estadoCivil != null) {
 				consulta.setParameter("estadoCivil", estadoCivil.ordinal());
 			}
 			if (!login.isEmpty()) {

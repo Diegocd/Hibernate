@@ -1,13 +1,22 @@
 package modelo;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -30,6 +39,12 @@ public class Persona extends Usuario{
 	@Column(name = "PER_ECV", nullable = false)
 	@Enumerated
 	private EstadoCivil estadoCivil;
+	
+	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<Direccion> direcciones = new ArrayList<>();
+	
+	@OneToMany(mappedBy = "personas", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Telefono> telefonos = new HashSet<>();
 
 	public Persona() {
 	}
@@ -54,6 +69,14 @@ public class Persona extends Usuario{
 		return dni;
 	}
 
+	public List<Direccion> getDirecciones() {
+		return direcciones;
+	}
+
+	public void setDirecciones(List<Direccion> direcciones) {
+		this.direcciones = direcciones;
+	}
+
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
 	}
@@ -73,5 +96,29 @@ public class Persona extends Usuario{
 	public void setEstadoCivil(EstadoCivil estadoCivil) {
 		this.estadoCivil = estadoCivil;
 	}
+
+    public void addAddress(Direccion direccion) {
+        direcciones.add( direccion );
+        direccion.getPersonas().add( this );
+    }
+
+    public void removeAddress(Direccion direccion) {
+    	direcciones.remove( direccion );
+    	direccion.getPersonas().remove( this );
+    }
+    
+    public Set<Telefono> getTelefonos() {
+        return telefonos;
+    }
+
+    public void addPhone(Telefono telefono) {
+        telefonos.addAll(Arrays.asList(telefono));
+        telefono.setPersona( this );
+    }
+
+    public void removePhone(Telefono telefono) {
+        telefonos.removeAll(Arrays.asList(telefono));
+        telefono.setPersona( null );
+    }
 
 }

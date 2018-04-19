@@ -23,7 +23,9 @@
 		<mapping class="modelo.Persona" />
 		<mapping class="modelo.Usuario" />
 		<mapping class="modelo.Cliente" />
+		<mapping class="modelo.Direccion" />
 		<mapping class="modelo.Vehiculo" />
+		<mapping class="modelo.Telefono" />
 
 
 	</session-factory>
