@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.hibernate.Session;
 
+import modelo.Cliente;
 import modelo.EstadoCivil;
 import modelo.Persona;
 import util.HibernateUtil;
@@ -69,7 +70,7 @@ public class RepositorioPersona {
 		final Session sesion = HibernateUtil.getSessionFactory().getCurrentSession();
 		try {
 			sesion.beginTransaction();
-			sesion.createQuery("Delete Persona where PER_ID = :identificador").setParameter("identificador", idPersona)
+			sesion.createQuery("Delete Usuario where USU_ID = :identificador").setParameter("identificador", idPersona)
 					.executeUpdate();
 			// sesion.delete((Persona) sesion.createQuery("From Persona where PER_ID =
 			// :identificador").setParameter("identificador", idPersona).uniqueResult());
@@ -99,7 +100,7 @@ public class RepositorioPersona {
 		}
 	}
 
-	public static List<Persona> consultar(String nombre, String apellidos, String dni, EstadoCivil estadoCivil) {
+	public static List<Persona> consultar(String nombre, String apellidos, String dni, EstadoCivil estadoCivil, String login) {
 		final Session sesion = HibernateUtil.getSessionFactory().getCurrentSession();
 		try {
 			sesion.beginTransaction();
@@ -118,6 +119,9 @@ public class RepositorioPersona {
 			if (estadoCivil!=null) {
 				sb.append(" and PER_ECV = :estadoCivil");
 			}
+			if (!login.isEmpty()) {
+				sb.append(" and USU_LOG = :login");
+			}
 			
 			final org.hibernate.query.Query<Persona> consulta = sesion.createQuery(sb.toString());
 			
@@ -132,6 +136,9 @@ public class RepositorioPersona {
 			}
 			if (estadoCivil!=null) {
 				consulta.setParameter("estadoCivil", estadoCivil.ordinal());
+			}
+			if (!login.isEmpty()) {
+				consulta.setParameter("login", login);
 			}
 			return consulta.list();
 		} catch (Exception e) {

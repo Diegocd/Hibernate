@@ -11,13 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "PER")
-public class Persona implements Serializable{
-
-	@Id
-	@GeneratedValue
-	@Column(name = "PER_ID")
-	private int idPersona;
+@Table(name = "A_PER")
+public class Persona extends Usuario{
 
 	@Column(name = "PER_NOM", nullable = false, length = 50)
 	private String nombre;
@@ -29,6 +24,7 @@ public class Persona implements Serializable{
 	private String dni;
 
 	@Column(name = "PER_EDA", nullable = false)
+	
 	private Integer edad;
 
 	@Column(name = "PER_ECV", nullable = false)
@@ -46,10 +42,6 @@ public class Persona implements Serializable{
 		return estadoCivil;
 	}
 
-	public int getIdPersona() {
-		return idPersona;
-	}
-
 	public String getNombre() {
 		return nombre;
 	}
@@ -60,10 +52,6 @@ public class Persona implements Serializable{
 
 	public String getDni() {
 		return dni;
-	}
-
-	public void setIdPersona(int idPersona) {
-		this.idPersona = idPersona;
 	}
 
 	public void setNombre(String nombre) {
