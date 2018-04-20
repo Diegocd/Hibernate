@@ -15,9 +15,9 @@
 		<property name="hibernate.show_sql">true</property>
 		<property name="hibernate.dialect">org.hibernate.dialect.SQLServerDialect</property>
 		<property name="hibernate.hbm2ddl.auto">create</property>
-		<!-- <property name="hibernate.cache.use_query_cache">thread</property> -->
-		<!-- <property name="hibernate.cache.region.factory_class">thread</property> -->
-		<!-- <property name="hibernate.javax.cache.provider">thread</property> -->
+		<property name="hibernate.cache.use_query_cache">true</property>
+		<property name="hibernate.cache.region.factory_class">org.hibernate.cache.jcache.JCacheRegionFactory</property>
+		<property name="hibernate.javax.cache.provider">org.ehcache.jsr107.EhcacheCachingProvider</property>
 		<!-- <property name="hibernate.hbm2ddl.import_files">acciones.sql</property> -->
 
 		<mapping class="modelo.Persona" />
@@ -25,8 +25,9 @@
 		<mapping class="modelo.Cliente" />
 		<mapping class="modelo.Direccion" />
 		<mapping class="modelo.Vehiculo" />
-		<mapping class="modelo.Telefono" />
-
+		<mapping class="modelo.Telefono" />	
+		<mapping class="modelo.DetallePersona" />
+		<mapping class="modelo.Aficion" />
 
 	</session-factory>
 </hibernate-configuration>

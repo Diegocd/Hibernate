@@ -9,19 +9,24 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import conversor.ConversorGenero;
 
 @Entity
 @Table(name = "A_PER")
-public class Persona extends Usuario{
+public class Persona extends Usuario {
 
 	@Column(name = "PER_NOM", nullable = false, length = 50)
 	private String nombre;
@@ -33,18 +38,27 @@ public class Persona extends Usuario{
 	private String dni;
 
 	@Column(name = "PER_EDA", nullable = false)
-	
+
 	private Integer edad;
 
 	@Column(name = "PER_ECV", nullable = false)
 	@Enumerated
 	private EstadoCivil estadoCivil;
-	
+
 	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<Direccion> direcciones = new ArrayList<>();
-	
+	private List<Direccion> direcciones = new ArrayList<Direccion>();
+
 	@OneToMany(mappedBy = "personas", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Telefono> telefonos = new HashSet<>();
+	private Set<Telefono> telefonos = new HashSet<Telefono>();
+	
+	@ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
+	private List<Aficion> aficiones = new ArrayList<Aficion>();
+	
+	@Column(name = "PER_GEN", nullable = false, length = 1)
+	@Convert(converter = ConversorGenero.class)
+	private Genero genero;
+
+
 
 	public Persona() {
 	}
@@ -97,28 +111,47 @@ public class Persona extends Usuario{
 		this.estadoCivil = estadoCivil;
 	}
 
-    public void addAddress(Direccion direccion) {
-        direcciones.add( direccion );
-        direccion.getPersonas().add( this );
-    }
+	public void addAddress(Direccion direccion) {
+		direcciones.add(direccion);
+		direccion.getPersonas().add(this);
+	}
 
-    public void removeAddress(Direccion direccion) {
-    	direcciones.remove( direccion );
-    	direccion.getPersonas().remove( this );
-    }
-    
-    public Set<Telefono> getTelefonos() {
-        return telefonos;
-    }
+	public void removeAddress(Direccion direccion) {
+		direcciones.remove(direccion);
+		direccion.getPersonas().remove(this);
+	}
 
-    public void addPhone(Telefono telefono) {
-        telefonos.addAll(Arrays.asList(telefono));
-        telefono.setPersona( this );
-    }
+	public Set<Telefono> getTelefonos() {
+		return telefonos;
+	}
 
-    public void removePhone(Telefono telefono) {
-        telefonos.removeAll(Arrays.asList(telefono));
-        telefono.setPersona( null );
-    }
+	public void setTelefonos(Set<Telefono> telefonos) {
+		this.telefonos = telefonos;
+	}
 
+	public void addPhone(Telefono telefono) {
+		telefonos.addAll(Arrays.asList(telefono));
+		telefono.setPersona(this);
+	}
+
+	public void removePhone(Telefono telefono) {
+		telefonos.removeAll(Arrays.asList(telefono));
+		telefono.setPersona(null);
+	}
+
+	public List<Aficion> getAficiones() {
+		return aficiones;
+	}
+	
+	public void setAficiones(List<Aficion> aficiones) {
+		this.aficiones = aficiones;
+	}
+	
+	public Genero getGenero() {
+		return genero;
+	}
+	
+	public void setGenero(Genero genero) {
+		this.genero = genero;
+	}
 }

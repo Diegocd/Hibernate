@@ -6,6 +6,7 @@ import java.util.List;
 import org.hibernate.Session;
 
 import modelo.Cliente;
+import modelo.DetallePersona;
 import modelo.Direccion;
 import modelo.EstadoCivil;
 import modelo.Persona;
@@ -20,6 +21,9 @@ public class RepositorioPersona {
 		try {
 			sesion.beginTransaction();
 			final Integer idPersona = (Integer) sesion.save(persona);
+			DetallePersona detalle = new DetallePersona();
+			detalle.setPersona(persona);
+			sesion.save(detalle);
 			sesion.getTransaction().commit();
 			return idPersona;
 		} catch (Exception e) {
@@ -74,6 +78,27 @@ public class RepositorioPersona {
 		}
 
 	}
+	
+	public static void modificarTelefono(final Integer idTelefono,final Integer idPersona, final String nuevoNumTel) {
+		final Session sesion = HibernateUtil.getSessionFactory().getCurrentSession();
+		try {
+			sesion.beginTransaction();
+
+			Persona persona = (Persona) sesion.createQuery("from Persona p where p.idUsuario = :idPersona")
+					.setParameter("idPersona", idPersona).uniqueResult();
+			
+			persona.getTelefonos().stream().filter(tel -> tel.getIdTelefono() == idTelefono).findFirst().get().setNumero(nuevoNumTel);
+			
+			sesion.getTransaction().commit();
+		} catch (Exception e) {
+			System.out.println("Ha ocurrido un error modificando el telefono: " + e.getMessage());
+			sesion.getTransaction().rollback();
+			throw new RuntimeException();
+		} finally {
+			sesion.close();
+		}
+
+	}
 
 	public static void modificarPersona(final Persona persona) {
 		final Session sesion = HibernateUtil.getSessionFactory().getCurrentSession();
@@ -115,8 +140,12 @@ public class RepositorioPersona {
 		final Session sesion = HibernateUtil.getSessionFactory().getCurrentSession();
 		try {
 			sesion.beginTransaction();
-			return (Persona) sesion.createQuery("from Persona p where p.idUsuario = :idPersona")
+			Persona persona = (Persona) sesion.createQuery("from Persona p where p.idUsuario = :idPersona")
 					.setParameter("idPersona", idPersona).uniqueResult();
+			if(persona==null) {
+				System.out.println("Esa persona no existe");
+			}
+			return persona;
 		} catch (Exception e) {
 			System.out.println("Se ha prducido un error con la consulta: " + e.getMessage());
 			sesion.getTransaction().rollback();

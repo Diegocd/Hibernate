@@ -43,7 +43,7 @@ public class Direccion {
 	private String puerta;
 	
 	@ManyToMany(mappedBy = "direcciones", fetch = FetchType.EAGER)
-    private List<Persona> personas = new ArrayList<>();
+    private List<Persona> personas = new ArrayList<Persona>();
 	
 	public Direccion() {}
 
