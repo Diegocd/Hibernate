@@ -20,6 +20,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.OrderBy;
+import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 
 import conversor.ConversorGenero;
@@ -48,7 +50,8 @@ public class Persona extends Usuario {
 	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private List<Direccion> direcciones = new ArrayList<Direccion>();
 
-	@OneToMany(mappedBy = "personas", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "personas", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+	@OrderColumn
 	private Set<Telefono> telefonos = new HashSet<Telefono>();
 	
 	@ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})

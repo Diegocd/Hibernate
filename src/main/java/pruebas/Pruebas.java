@@ -23,7 +23,7 @@ public class Pruebas {
 		crearPersona("11111111S", "log1");
 		//modificarPersonaAlCompleto();
 		//eliminarPersona(1);
-		// consultarPersona(1);
+		consultarPersona(1);
 		// consultarPersona("%Miguel%", "", "", null, "Miguel1");
 	}
 
@@ -64,6 +64,10 @@ public class Pruebas {
 		telefono.setNumero("666666666");
 		Telefono telefono2 = new Telefono();
 		telefono2.setNumero("666777777");
+		Telefono telefono3 = new Telefono();
+		telefono3.setNumero("666888888");
+		Telefono telefono4 = new Telefono();
+		telefono4.setNumero("666999999");
 
 //		DetallePersona detalles = new DetallePersona();
 //		detalles.setDeporte(true);
@@ -74,7 +78,9 @@ public class Pruebas {
 		persona.addAddress(direccion);
 		persona.addAddress(direccion2);
 		persona.addPhone(telefono);
+		persona.addPhone(telefono4);
 		persona.addPhone(telefono2);
+		persona.addPhone(telefono3);
 
 		return RepositorioPersona.crearPersona(persona);
 
@@ -184,6 +190,7 @@ public class Pruebas {
 		System.out.println(persona.getEdad());
 		System.out.println(persona.getDni());
 		System.out.println(persona.getGenero().getCodigo());
+		persona.getTelefonos().forEach(t -> System.out.println(t.getNumero()));
 	}
 
 	private static void consultarPersona(String nombre, String apellidos, String dni, EstadoCivil estadoCivil,

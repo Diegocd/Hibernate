@@ -40,7 +40,7 @@ public class RepositorioPersona {
 		final Session sesion = HibernateUtil.getSessionFactory().getCurrentSession();
 		try {
 			sesion.beginTransaction();
-			
+
 			Persona persona = (Persona) sesion.createQuery("from Persona p where p.idUsuario = :idPersona")
 					.setParameter("idPersona", idPersona).uniqueResult();
 
@@ -67,7 +67,7 @@ public class RepositorioPersona {
 					.setParameter("idPersona", idPersona).uniqueResult();
 
 			persona.getTelefonos().removeIf(tel -> tel.getIdTelefono() == idTelefono);
-			
+
 			sesion.getTransaction().commit();
 		} catch (Exception e) {
 			System.out.println("Ha ocurrido un error eliminando el telefono: " + e.getMessage());
@@ -78,17 +78,18 @@ public class RepositorioPersona {
 		}
 
 	}
-	
-	public static void modificarTelefono(final Integer idTelefono,final Integer idPersona, final String nuevoNumTel) {
+
+	public static void modificarTelefono(final Integer idTelefono, final Integer idPersona, final String nuevoNumTel) {
 		final Session sesion = HibernateUtil.getSessionFactory().getCurrentSession();
 		try {
 			sesion.beginTransaction();
 
 			Persona persona = (Persona) sesion.createQuery("from Persona p where p.idUsuario = :idPersona")
 					.setParameter("idPersona", idPersona).uniqueResult();
-			
-			persona.getTelefonos().stream().filter(tel -> tel.getIdTelefono() == idTelefono).findFirst().get().setNumero(nuevoNumTel);
-			
+
+			persona.getTelefonos().stream().filter(tel -> tel.getIdTelefono() == idTelefono).findFirst().get()
+					.setNumero(nuevoNumTel);
+
 			sesion.getTransaction().commit();
 		} catch (Exception e) {
 			System.out.println("Ha ocurrido un error modificando el telefono: " + e.getMessage());
@@ -142,7 +143,7 @@ public class RepositorioPersona {
 			sesion.beginTransaction();
 			Persona persona = (Persona) sesion.createQuery("from Persona p where p.idUsuario = :idPersona")
 					.setParameter("idPersona", idPersona).uniqueResult();
-			if(persona==null) {
+			if (persona == null) {
 				System.out.println("Esa persona no existe");
 			}
 			return persona;
